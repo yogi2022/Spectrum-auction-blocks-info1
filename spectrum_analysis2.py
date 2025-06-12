@@ -44,17 +44,7 @@ st.markdown("---")
 def load_spectrum_data():
     """Load and process spectrum auction data"""
     
-    # 800 MHz Band Data
-    data_800mhz = {
-        'State': ['Andhra Pradesh', 'Bihar', 'Delhi', 'Gujarat', 'Haryana', 'Himachal Pradesh', 
-                 'Jammu and Kashmir', 'Karnataka', 'Kerala', 'Kolkata', 'Madhya Pradesh', 
-                 'Maharashtra', 'Mumbai', 'Odisha', 'Punjab', 'Rajasthan', 'Tamil Nadu', 
-                 'Uttar Pradesh (East)', 'West Bengal'],
-        'Blocks_800MHz': [8, 8, 5, 3, 3, 6, 2, 5, 5, 4, 4, 4, 4, 7, 6, 4, 5, 8, 4],
-        'Quantum_800MHz': [10.0, 10.0, 6.25, 3.75, 3.75, 7.5, 2.5, 6.25, 6.25, 5.0, 5.0, 5.0, 5.0, 8.75, 7.5, 5.0, 6.25, 10.0, 5.0]
-    }
-    
-    # 900 MHz Band Data
+    # 900 MHz Band Data (keeping this)
     data_900mhz = {
         'State': ['Andhra Pradesh', 'Assam', 'Bihar', 'Delhi', 'Gujarat', 'Haryana', 
                  'Himachal Pradesh', 'Jammu and Kashmir', 'Karnataka', 'Kerala', 'Kolkata', 
@@ -64,7 +54,7 @@ def load_spectrum_data():
         'Quantum_900MHz': [4.4, 6.8, 11.8, 0.8, 1.6, 4.6, 3.4, 13.4, 4.6, 1.4, 2.8, 4.4, 2.8, 0.8, 4.4, 8.4, 1.2, 4.4, 8.4, 6.2, 11.8, 8.8]
     }
     
-    # 1800 MHz Band Data
+    # 1800 MHz Band Data (keeping this)
     data_1800mhz = {
         'State': ['Andhra Pradesh', 'Assam', 'Bihar', 'Delhi', 'Gujarat', 'Haryana', 
                  'Himachal Pradesh', 'Jammu and Kashmir', 'Karnataka', 'Kerala', 'Kolkata', 
@@ -74,7 +64,7 @@ def load_spectrum_data():
         'Quantum_1800MHz': [9.0, 8.6, 10.2, 11.0, 4.0, 28.4, 13.2, 6.0, 4.8, 25.4, 18.6, 1.2, 2.4, 18.4, 2.2, 8.8, 9.8, 7.0, 3.4, 1.0]
     }
     
-    # High frequency bands data
+    # High frequency bands data (expanded for individual analysis)
     high_freq_data = {
         'State': ['Andhra Pradesh', 'Assam', 'Bihar', 'Delhi', 'Gujarat', 'Haryana', 
                  'Himachal Pradesh', 'Jammu and Kashmir', 'Karnataka', 'Kerala', 'Kolkata', 
@@ -88,15 +78,14 @@ def load_spectrum_data():
     }
     
     # Create DataFrames
-    df_800 = pd.DataFrame(data_800mhz)
     df_900 = pd.DataFrame(data_900mhz)
     df_1800 = pd.DataFrame(data_1800mhz)
     df_high = pd.DataFrame(high_freq_data)
     
-    return df_800, df_900, df_1800, df_high
+    return df_900, df_1800, df_high
 
 # Load data
-df_800, df_900, df_1800, df_high = load_spectrum_data()
+df_900, df_1800, df_high = load_spectrum_data()
 
 # Sidebar for navigation
 st.sidebar.title("📊 Navigation")
@@ -111,34 +100,29 @@ page = st.sidebar.selectbox("Select Analysis View", [
 if page == "Executive Summary":
     st.header("📈 Executive Summary")
     
-    # Key metrics
-    col1, col2, col3, col4 = st.columns(4)
+    # Key metrics (removed 800 MHz)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
-        total_800_quantum = df_800['Quantum_800MHz'].sum()
-        st.metric("Total 800MHz Spectrum", f"{total_800_quantum:.1f} MHz", "Primary Band")
-    
-    with col2:
         total_900_quantum = df_900['Quantum_900MHz'].sum()
         st.metric("Total 900MHz Spectrum", f"{total_900_quantum:.1f} MHz", "High Demand")
     
-    with col3:
+    with col2:
         total_1800_quantum = df_1800['Quantum_1800MHz'].sum()
         st.metric("Total 1800MHz Spectrum", f"{total_1800_quantum:.1f} MHz", "LTE Primary")
     
-    with col4:
-        total_states = len(set(df_800['State'].tolist() + df_900['State'].tolist() + df_1800['State'].tolist()))
+    with col3:
+        total_states = len(set(df_900['State'].tolist() + df_1800['State'].tolist()))
         st.metric("Coverage Areas", f"{total_states}", "States/Circles")
     
     st.markdown("---")
     
-    # Total spectrum by band
+    # Total spectrum by band (removed 800 MHz)
     st.subheader("📊 Total Spectrum Available by Band")
     
     band_totals = {
-        'Band': ['800 MHz', '900 MHz', '1800 MHz', '2100 MHz', '2300 MHz', '2500 MHz', '3300 MHz', '26 GHz'],
+        'Band': ['900 MHz', '1800 MHz', '2100 MHz', '2300 MHz', '2500 MHz', '3300 MHz', '26 GHz'],
         'Total_MHz': [
-            df_800['Quantum_800MHz'].sum(),
             df_900['Quantum_900MHz'].sum(), 
             df_1800['Quantum_1800MHz'].sum(),
             df_high['2100MHz'].sum(),
@@ -167,7 +151,7 @@ if page == "Executive Summary":
         fig_pie.update_layout(height=400)
         st.plotly_chart(fig_pie, use_container_width=True)
     
-    # Market insights
+    # Market insights (updated without 800 MHz references)
     st.subheader("💡 Key Market Insights")
     
     col1, col2 = st.columns(2)
@@ -175,7 +159,7 @@ if page == "Executive Summary":
     with col1:
         st.markdown("""
         **High-Value Opportunities:**
-        - 26 GHz band offers massive spectrum (6,650 MHz total)
+        - 26 GHz band offers massive spectrum (6,400 MHz total)
         - 3300 MHz provides good capacity for 5G deployment
         - 900 MHz highly valuable for coverage
         """)
@@ -183,7 +167,7 @@ if page == "Executive Summary":
     with col2:
         st.markdown("""
         **Strategic Considerations:**
-        - Limited 800/900 MHz availability requires strategic bidding
+        - Limited 900 MHz availability requires strategic bidding
         - High frequency bands (3300 MHz, 26 GHz) support capacity needs
         - State-wise variations create regional opportunities
         """)
@@ -191,37 +175,11 @@ if page == "Executive Summary":
 elif page == "Band-wise Analysis":
     st.header("📡 Band-wise Spectrum Analysis")
     
-    # Band selection
+    # Updated band selection (removed 800 MHz and expanded high frequency bands)
     selected_band = st.selectbox("Select Frequency Band for Analysis", 
-                                ["800 MHz", "900 MHz", "1800 MHz", "High Frequency Bands"])
+                                ["900 MHz", "1800 MHz", "2100 MHz", "2300 MHz", "2500 MHz", "3300 MHz", "26 GHz"])
     
-    if selected_band == "800 MHz":
-        st.subheader("800 MHz Band Analysis")
-        
-        col1, col2 = st.columns(2)
-        
-        with col1:
-            fig_800_blocks = px.bar(df_800, x='State', y='Blocks_800MHz',
-                                   title="800 MHz Blocks by State",
-                                   color='Blocks_800MHz',
-                                   color_continuous_scale='blues')
-            fig_800_blocks.update_xaxes(tickangle=45)
-            st.plotly_chart(fig_800_blocks, use_container_width=True)
-        
-        with col2:
-            fig_800_quantum = px.bar(df_800, x='State', y='Quantum_800MHz',
-                                    title="800 MHz Spectrum Quantum by State",
-                                    color='Quantum_800MHz',
-                                    color_continuous_scale='greens')
-            fig_800_quantum.update_xaxes(tickangle=45)
-            st.plotly_chart(fig_800_quantum, use_container_width=True)
-        
-        # Top opportunities
-        st.subheader("Top 800 MHz Opportunities")
-        top_800 = df_800.nlargest(5, 'Quantum_800MHz')[['State', 'Blocks_800MHz', 'Quantum_800MHz']]
-        st.dataframe(top_800, use_container_width=True)
-    
-    elif selected_band == "900 MHz":
+    if selected_band == "900 MHz":
         st.subheader("900 MHz Band Analysis")
         
         col1, col2 = st.columns(2)
@@ -283,20 +241,123 @@ elif page == "Band-wise Analysis":
         top_1800 = df_1800.nlargest(5, 'Quantum_1800MHz')[['State', 'Blocks_1800MHz', 'Quantum_1800MHz']]
         st.dataframe(top_1800, use_container_width=True)
     
-    else:  # High Frequency Bands
-        st.subheader("High Frequency Bands Analysis")
+    # Individual analysis for each high frequency band
+    elif selected_band == "2100 MHz":
+        st.subheader("2100 MHz Band Analysis")
         
-        # Heatmap for high frequency bands
-        high_freq_matrix = df_high.set_index('State')[['2100MHz', '2300MHz', '2500MHz', '3300MHz', '26GHz']]
+        # Filter states with non-zero 2100 MHz spectrum
+        df_2100_filtered = df_high[df_high['2100MHz'] > 0]
         
-        fig_heatmap = px.imshow(high_freq_matrix.T, 
-                               title="High Frequency Spectrum Availability Heatmap",
-                               color_continuous_scale='viridis',
-                               aspect='auto')
-        fig_heatmap.update_layout(height=500)
-        st.plotly_chart(fig_heatmap, use_container_width=True)
+        col1, col2 = st.columns(2)
         
-        # Individual band analysis
+        with col1:
+            fig_2100 = px.bar(df_2100_filtered, x='State', y='2100MHz',
+                             title="2100 MHz Spectrum by State",
+                             color='2100MHz',
+                             color_continuous_scale='blues')
+            fig_2100.update_xaxes(tickangle=45)
+            st.plotly_chart(fig_2100, use_container_width=True)
+        
+        with col2:
+            # Summary statistics
+            st.subheader("2100 MHz Summary")
+            total_2100 = df_high['2100MHz'].sum()
+            available_states = len(df_2100_filtered)
+            avg_spectrum = df_2100_filtered['2100MHz'].mean()
+            
+            st.metric("Total 2100 MHz Spectrum", f"{total_2100} MHz")
+            st.metric("States with 2100 MHz", f"{available_states}")
+            st.metric("Average per State", f"{avg_spectrum:.1f} MHz")
+        
+        # Top opportunities
+        st.subheader("Top 2100 MHz Opportunities")
+        if not df_2100_filtered.empty:
+            top_2100 = df_2100_filtered.nlargest(5, '2100MHz')[['State', '2100MHz']]
+            st.dataframe(top_2100, use_container_width=True)
+        else:
+            st.write("No states have 2100 MHz spectrum available.")
+    
+    elif selected_band == "2300 MHz":
+        st.subheader("2300 MHz Band Analysis")
+        
+        # Filter states with non-zero 2300 MHz spectrum
+        df_2300_filtered = df_high[df_high['2300MHz'] > 0]
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if not df_2300_filtered.empty:
+                fig_2300 = px.bar(df_2300_filtered, x='State', y='2300MHz',
+                                 title="2300 MHz Spectrum by State",
+                                 color='2300MHz',
+                                 color_continuous_scale='greens')
+                fig_2300.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_2300, use_container_width=True)
+            else:
+                st.write("No visualization available - limited state coverage")
+        
+        with col2:
+            # Summary statistics
+            st.subheader("2300 MHz Summary")
+            total_2300 = df_high['2300MHz'].sum()
+            available_states = len(df_2300_filtered)
+            
+            st.metric("Total 2300 MHz Spectrum", f"{total_2300} MHz")
+            st.metric("States with 2300 MHz", f"{available_states}")
+            if available_states > 0:
+                avg_spectrum = df_2300_filtered['2300MHz'].mean()
+                st.metric("Average per State", f"{avg_spectrum:.1f} MHz")
+        
+        # Top opportunities
+        st.subheader("Top 2300 MHz Opportunities")
+        if not df_2300_filtered.empty:
+            top_2300 = df_2300_filtered.nlargest(5, '2300MHz')[['State', '2300MHz']]
+            st.dataframe(top_2300, use_container_width=True)
+        else:
+            st.write("No states have 2300 MHz spectrum available.")
+    
+    elif selected_band == "2500 MHz":
+        st.subheader("2500 MHz Band Analysis")
+        
+        # Filter states with non-zero 2500 MHz spectrum
+        df_2500_filtered = df_high[df_high['2500MHz'] > 0]
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if not df_2500_filtered.empty:
+                fig_2500 = px.bar(df_2500_filtered, x='State', y='2500MHz',
+                                 title="2500 MHz Spectrum by State",
+                                 color='2500MHz',
+                                 color_continuous_scale='reds')
+                fig_2500.update_xaxes(tickangle=45)
+                st.plotly_chart(fig_2500, use_container_width=True)
+            else:
+                st.write("No visualization available - limited state coverage")
+        
+        with col2:
+            # Summary statistics
+            st.subheader("2500 MHz Summary")
+            total_2500 = df_high['2500MHz'].sum()
+            available_states = len(df_2500_filtered)
+            
+            st.metric("Total 2500 MHz Spectrum", f"{total_2500} MHz")
+            st.metric("States with 2500 MHz", f"{available_states}")
+            if available_states > 0:
+                avg_spectrum = df_2500_filtered['2500MHz'].mean()
+                st.metric("Average per State", f"{avg_spectrum:.1f} MHz")
+        
+        # Top opportunities
+        st.subheader("Top 2500 MHz Opportunities")
+        if not df_2500_filtered.empty:
+            top_2500 = df_2500_filtered.nlargest(5, '2500MHz')[['State', '2500MHz']]
+            st.dataframe(top_2500, use_container_width=True)
+        else:
+            st.write("No states have 2500 MHz spectrum available.")
+    
+    elif selected_band == "3300 MHz":
+        st.subheader("3300 MHz Band Analysis")
+        
         col1, col2 = st.columns(2)
         
         with col1:
@@ -308,54 +369,114 @@ elif page == "Band-wise Analysis":
             st.plotly_chart(fig_3300, use_container_width=True)
         
         with col2:
-            fig_26ghz = px.bar(df_high, x='State', y='26GHz',
+            # Summary statistics
+            st.subheader("3300 MHz Summary")
+            total_3300 = df_high['3300MHz'].sum()
+            available_states = len(df_high[df_high['3300MHz'] > 0])
+            avg_spectrum = df_high[df_high['3300MHz'] > 0]['3300MHz'].mean()
+            
+            st.metric("Total 3300 MHz Spectrum", f"{total_3300} MHz")
+            st.metric("States with 3300 MHz", f"{available_states}")
+            st.metric("Average per State", f"{avg_spectrum:.1f} MHz")
+        
+        # Distribution analysis
+        st.subheader("3300 MHz Distribution Analysis")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig_hist_3300 = px.histogram(df_high, x='3300MHz', nbins=10,
+                                        title="Distribution of 3300 MHz Spectrum")
+            st.plotly_chart(fig_hist_3300, use_container_width=True)
+        
+        with col2:
+            # Top opportunities
+            st.subheader("Top 3300 MHz Opportunities")
+            top_3300 = df_high.nlargest(5, '3300MHz')[['State', '3300MHz']]
+            st.dataframe(top_3300, use_container_width=True)
+    
+    elif selected_band == "26 GHz":
+        st.subheader("26 GHz Band Analysis")
+        
+        # Filter states with non-zero 26 GHz spectrum
+        df_26ghz_filtered = df_high[df_high['26GHz'] > 0]
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig_26ghz = px.bar(df_26ghz_filtered, x='State', y='26GHz',
                               title="26 GHz Spectrum by State",
                               color='26GHz',
                               color_continuous_scale='inferno')
             fig_26ghz.update_xaxes(tickangle=45)
             st.plotly_chart(fig_26ghz, use_container_width=True)
+        
+        with col2:
+            # Summary statistics
+            st.subheader("26 GHz Summary")
+            total_26ghz = df_high['26GHz'].sum()
+            available_states = len(df_26ghz_filtered)
+            avg_spectrum = df_26ghz_filtered['26GHz'].mean()
+            
+            st.metric("Total 26 GHz Spectrum", f"{total_26ghz} MHz")
+            st.metric("States with 26 GHz", f"{available_states}")
+            st.metric("Average per State", f"{avg_spectrum:.1f} MHz")
+        
+        # Distribution analysis
+        st.subheader("26 GHz Distribution Analysis")
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            fig_hist_26ghz = px.histogram(df_26ghz_filtered, x='26GHz', nbins=10,
+                                         title="Distribution of 26 GHz Spectrum")
+            st.plotly_chart(fig_hist_26ghz, use_container_width=True)
+        
+        with col2:
+            # Top opportunities
+            st.subheader("Top 26 GHz Opportunities")
+            top_26ghz = df_26ghz_filtered.nlargest(5, '26GHz')[['State', '26GHz']]
+            st.dataframe(top_26ghz, use_container_width=True)
 
 elif page == "State-wise Comparison":
     st.header("🗺️ State-wise Spectrum Comparison")
     
-    # State selection
+    # State selection (updated to use 900 MHz states as base)
     selected_states = st.multiselect("Select States for Comparison", 
-                                    df_800['State'].tolist(),
+                                    df_900['State'].tolist(),
                                     default=['Andhra Pradesh', 'Delhi', 'Maharashtra', 'Karnataka'])
     
     if selected_states:
-        # Merge data for selected states
-        df_merged = df_800[df_800['State'].isin(selected_states)].copy()
-        
-        # Add 900 MHz data
-        df_900_filtered = df_900[df_900['State'].isin(selected_states)]
-        df_merged = df_merged.merge(df_900_filtered[['State', 'Quantum_900MHz']], on='State', how='left')
+        # Merge data for selected states (removed 800 MHz)
+        df_merged = df_900[df_900['State'].isin(selected_states)].copy()
         
         # Add 1800 MHz data
         df_1800_filtered = df_1800[df_1800['State'].isin(selected_states)]
         df_merged = df_merged.merge(df_1800_filtered[['State', 'Quantum_1800MHz']], on='State', how='left')
         
+        # Add high frequency data
+        df_high_filtered = df_high[df_high['State'].isin(selected_states)]
+        df_merged = df_merged.merge(df_high_filtered[['State', '3300MHz', '26GHz']], on='State', how='left')
+        
         # Fill NaN values with 0
         df_merged = df_merged.fillna(0)
         
-        # Stacked bar chart
+        # Stacked bar chart (updated without 800 MHz)
         fig_stacked = go.Figure()
         
-        fig_stacked.add_trace(go.Bar(name='800 MHz', x=df_merged['State'], y=df_merged['Quantum_800MHz']))
         fig_stacked.add_trace(go.Bar(name='900 MHz', x=df_merged['State'], y=df_merged['Quantum_900MHz']))
         fig_stacked.add_trace(go.Bar(name='1800 MHz', x=df_merged['State'], y=df_merged['Quantum_1800MHz']))
+        fig_stacked.add_trace(go.Bar(name='3300 MHz', x=df_merged['State'], y=df_merged['3300MHz']))
         
         fig_stacked.update_layout(barmode='stack', title='Total Spectrum Comparison by State')
         st.plotly_chart(fig_stacked, use_container_width=True)
         
-        # Detailed comparison table
+        # Detailed comparison table (updated without 800 MHz)
         st.subheader("Detailed Spectrum Comparison")
         
         # Calculate total spectrum
-        df_merged['Total_Spectrum'] = df_merged['Quantum_800MHz'] + df_merged['Quantum_900MHz'] + df_merged['Quantum_1800MHz']
+        df_merged['Total_Spectrum'] = df_merged['Quantum_900MHz'] + df_merged['Quantum_1800MHz'] + df_merged['3300MHz']
         
-        comparison_table = df_merged[['State', 'Quantum_800MHz', 'Quantum_900MHz', 'Quantum_1800MHz', 'Total_Spectrum']]
-        comparison_table.columns = ['State', '800 MHz', '900 MHz', '1800 MHz', 'Total (MHz)']
+        comparison_table = df_merged[['State', 'Quantum_900MHz', 'Quantum_1800MHz', '3300MHz', '26GHz', 'Total_Spectrum']]
+        comparison_table.columns = ['State', '900 MHz', '1800 MHz', '3300 MHz', '26 GHz', 'Total (MHz)']
         
         st.dataframe(comparison_table, use_container_width=True)
         
@@ -372,18 +493,17 @@ elif page == "State-wise Comparison":
 elif page == "Market Opportunities":
     st.header("💼 Market Opportunities Analysis")
     
-    # Calculate opportunity scores
+    # Calculate opportunity scores (updated without 800 MHz)
     st.subheader("Opportunity Scoring Matrix")
     
     # Merge all data for comprehensive analysis
-    df_opportunities = df_800.copy()
-    df_opportunities = df_opportunities.merge(df_900[['State', 'Quantum_900MHz']], on='State', how='left')
+    df_opportunities = df_900.copy()
     df_opportunities = df_opportunities.merge(df_1800[['State', 'Quantum_1800MHz']], on='State', how='left')
     df_opportunities = df_opportunities.merge(df_high[['State', '3300MHz', '26GHz']], on='State', how='left')
     df_opportunities = df_opportunities.fillna(0)
     
-    # Calculate opportunity scores (normalized)
-    df_opportunities['Coverage_Score'] = (df_opportunities['Quantum_800MHz'] + df_opportunities['Quantum_900MHz']) / 2
+    # Calculate opportunity scores (normalized, updated without 800 MHz)
+    df_opportunities['Coverage_Score'] = df_opportunities['Quantum_900MHz']  # Only 900 MHz for coverage
     df_opportunities['Capacity_Score'] = (df_opportunities['Quantum_1800MHz'] + df_opportunities['3300MHz']/10) / 2
     df_opportunities['Future_Score'] = df_opportunities['26GHz'] / 100
     df_opportunities['Total_Score'] = (df_opportunities['Coverage_Score'] + df_opportunities['Capacity_Score'] + df_opportunities['Future_Score']) / 3
@@ -393,7 +513,7 @@ elif page == "Market Opportunities":
                                size='Future_Score', color='Total_Score',
                                hover_name='State',
                                title="Market Opportunity Matrix",
-                               labels={'Coverage_Score': 'Coverage Opportunity (800+900 MHz)',
+                               labels={'Coverage_Score': 'Coverage Opportunity (900 MHz)',
                                       'Capacity_Score': 'Capacity Opportunity (1800+3300 MHz)'})
     
     st.plotly_chart(fig_opportunity, use_container_width=True)
@@ -403,7 +523,7 @@ elif page == "Market Opportunities":
     
     with col1:
         st.subheader("🎯 Top Coverage Opportunities")
-        top_coverage = df_opportunities.nlargest(5, 'Coverage_Score')[['State', 'Coverage_Score', 'Quantum_800MHz', 'Quantum_900MHz']]
+        top_coverage = df_opportunities.nlargest(5, 'Coverage_Score')[['State', 'Coverage_Score', 'Quantum_900MHz']]
         st.dataframe(top_coverage, use_container_width=True)
     
     with col2:
@@ -411,7 +531,7 @@ elif page == "Market Opportunities":
         top_capacity = df_opportunities.nlargest(5, 'Capacity_Score')[['State', 'Capacity_Score', 'Quantum_1800MHz', '3300MHz']]
         st.dataframe(top_capacity, use_container_width=True)
     
-    # Investment recommendations
+    # Investment recommendations (updated)
     st.subheader("💡 Investment Recommendations")
     
     high_value_states = df_opportunities[df_opportunities['Total_Score'] > df_opportunities['Total_Score'].quantile(0.75)]
@@ -425,7 +545,7 @@ elif page == "Market Opportunities":
     
     with col2:
         st.markdown("**Strategic Focus Areas:**")
-        st.write("• Prioritize 800/900 MHz for coverage")
+        st.write("• Prioritize 900 MHz for coverage")
         st.write("• Target 3300 MHz for 5G capacity")
         st.write("• Consider 26 GHz for future readiness")
         st.write("• Focus on high-scoring states first")
@@ -433,35 +553,33 @@ elif page == "Market Opportunities":
 else:  # Strategic Insights
     st.header("🎯 Strategic Insights & Recommendations")
     
-    # Portfolio optimization
+    # Portfolio optimization (updated without 800 MHz)
     st.subheader("📊 Portfolio Optimization Analysis")
     
     # Calculate total investment scenarios
-    df_strategy = df_800.copy()
-    df_strategy = df_strategy.merge(df_900[['State', 'Quantum_900MHz']], on='State', how='left')
+    df_strategy = df_900.copy()
     df_strategy = df_strategy.merge(df_1800[['State', 'Quantum_1800MHz']], on='State', how='left')
     df_strategy = df_strategy.merge(df_high[['State', '3300MHz', '26GHz']], on='State', how='left')
     df_strategy = df_strategy.fillna(0)
     
-    # Scenario analysis
+    # Scenario analysis (updated scenarios)
     st.subheader("📈 Investment Scenarios")
     
     scenario = st.selectbox("Select Investment Strategy", 
-                           ["Conservative (Low Bands Focus)", 
+                           ["Conservative (Coverage Focus)", 
                             "Balanced Portfolio", 
                             "Aggressive (5G Focus)",
                             "Future-Ready (High Bands)"])
     
-    if scenario == "Conservative (Low Bands Focus)":
-        df_strategy['Priority_Score'] = df_strategy['Quantum_800MHz'] * 0.5 + df_strategy['Quantum_900MHz'] * 0.5
-        focus_bands = "800 MHz & 900 MHz"
+    if scenario == "Conservative (Coverage Focus)":
+        df_strategy['Priority_Score'] = df_strategy['Quantum_900MHz']  # Only 900 MHz
+        focus_bands = "900 MHz"
         strategy_desc = "Focus on coverage and rural penetration"
         
     elif scenario == "Balanced Portfolio":
-        df_strategy['Priority_Score'] = (df_strategy['Quantum_800MHz'] * 0.3 + 
-                                       df_strategy['Quantum_900MHz'] * 0.3 + 
-                                       df_strategy['Quantum_1800MHz'] * 0.4)
-        focus_bands = "All traditional bands"
+        df_strategy['Priority_Score'] = (df_strategy['Quantum_900MHz'] * 0.4 + 
+                                       df_strategy['Quantum_1800MHz'] * 0.6)
+        focus_bands = "900 MHz & 1800 MHz"
         strategy_desc = "Balanced coverage and capacity"
         
     elif scenario == "Aggressive (5G Focus)":
@@ -497,7 +615,7 @@ else:  # Strategic Insights
         - **Score Range:** {df_strategy['Priority_Score'].min():.1f} - {df_strategy['Priority_Score'].max():.1f}
         """)
     
-    # Risk analysis
+    # Risk analysis (updated)
     st.subheader("⚠️ Risk Assessment")
     
     col1, col2, col3 = st.columns(3)
@@ -526,14 +644,14 @@ else:  # Strategic Insights
         - Niche frequency bands
         """)
     
-    # Final recommendations
+    # Final recommendations (updated)
     st.subheader("🏆 Final Strategic Recommendations")
     
     recommendations = """
     ## Key Recommendations for Spectrum Auction Strategy:
     
     ### 1. **Priority Bands by Use Case**
-    - **Coverage Extension**: Focus on 800/900 MHz in rural areas
+    - **Coverage Extension**: Focus on 900 MHz in rural areas
     - **Urban Capacity**: Target 1800/2100 MHz in metro circles  
     - **5G Deployment**: Secure 3300 MHz for immediate 5G rollout
     - **Future Readiness**: Consider 26 GHz for advanced 5G services
@@ -541,12 +659,12 @@ else:  # Strategic Insights
     ### 2. **Geographic Strategy**
     - **Tier-1 Markets**: Balanced portfolio across all bands
     - **Tier-2 Cities**: Focus on 1800/3300 MHz for growth
-    - **Rural Areas**: Prioritize 800/900 MHz for coverage
+    - **Rural Areas**: Prioritize 900 MHz for coverage
     
     ### 3. **Budget Allocation Guidelines**
-    - **40%**: Low bands (800/900 MHz) for coverage
-    - **35%**: Mid bands (1800/2100 MHz) for capacity
-    - **20%**: 3300 MHz for 5G
+    - **30%**: Low bands (900 MHz) for coverage
+    - **40%**: Mid bands (1800/2100 MHz) for capacity
+    - **25%**: 3300 MHz for 5G
     - **5%**: 26 GHz for future readiness
     
     ### 4. **Risk Mitigation**
